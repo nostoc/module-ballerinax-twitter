@@ -1,146 +1,62 @@
 ## Overview
 
-[Twitter(X)](https://about.twitter.com/) is a widely-used social networking service provided by X Corp., enabling users to post and interact with messages known as "tweets".
+[Twitter](https://twitter.com/) is a social media platform that enables users to share short messages, engage with content, and connect with audiences worldwide, serving as a powerful tool for real-time communication and information sharing.
 
-The `ballerinax/twitter` package offers APIs to connect and interact with [Twitter(X) API](https://developer.twitter.com/en/docs/twitter-api) endpoints, specifically based on [Twitter(X) API v2](https://developer.x.com/en/docs/twitter-api/migrate/whats-new).
-
+The `ballerinax/twitter` package offers APIs to connect and interact with [Twitter API](https://developer.twitter.com/en/docs/twitter-api) endpoints, specifically based on [Twitter API v2](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api).
 ## Setup guide
 
-To use the Twitter connector, you must have access to the Twitter API through a [Twitter developer account](https://developer.twitter.com/en) and a project under it. If you do not have a Twitter Developer account, you can sign up for one [here](https://developer.twitter.com/en/apply-for-access).
+To use the Twitter connector, you must have access to the Twitter API through a [Twitter Developer account](https://developer.twitter.com/) and obtain API credentials. If you do not have a Twitter account, you can sign up for one [here](https://twitter.com/i/flow/signup).
 
-### Step 1: Create a Twitter Developer Project
+### Step 1: Create a Twitter Developer Account
 
-1. Open the [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard).
+1. Navigate to the [Twitter website](https://twitter.com/) and sign up for an account or log in if you already have one.
 
-2. Click on the "Projects & Apps" tab and select an existing project or create a new one for which you want API Keys and Authentication Tokens.
+2. Apply for a Twitter Developer account at [developer.twitter.com](https://developer.twitter.com/). Note that API access requires approval and may have different access levels depending on your use case and Twitter's current API access policies.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-twitter/main/docs/setup/resources/twitter-developer-portal.png alt="Twitter Developer Portal" style="width: 70%;">
+### Step 2: Generate API Keys and Access Tokens
 
-### Step 2: Set up user authentication settings
+1. Log in to your Twitter Developer account at [developer.twitter.com](https://developer.twitter.com/).
 
-1. Scroll down and Click on the **Set up** button to set up user authentication.
+2. Navigate to the Developer Portal and select your App from the dashboard.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-twitter/main/docs/setup/resources/set-up.png alt="Set up" style="width: 70%;">
+3. Go to the "Keys and tokens" tab within your App settings.
 
-2. Complete the user authentication setup.
+4. Generate your API Key, API Key Secret, Access Token, and Access Token Secret as needed for your integration.
 
-### Step 3. Obtain Client Id and Client Secret.
-
-1. After completing the setup, you will be provided with your client Id and client secret. Make sure to save the provided client Id and client secret.
-
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-twitter/main/docs/setup/resources/get-keys.png alt="Get Keys" style="width: 70%;">
-
-### Step 4: Setup OAuth 2.0 Flow
-
-Before proceeding with the Quickstart, ensure you have obtained the Access Token using the following steps:
-
-1. Create an authorization URL using the following format:
-
-    ```
-    https://twitter.com/i/oauth2/authorize?response_type=code&client_id=<your_client_id>&redirect_uri=<your_redirect_uri>&scope=tweet.read%20tweet.write%20users.read%20follows.read&state=state&code_challenge=<your_code_challenge>&code_challenge_method=plain
-    ```
-
-    Replace `<your_client_id>`, `<your_redirect_uri>`, and `<your_code_challenge>` with your specific values. Make sure to include the necessary scopes depending on your use case.
-
-    **Note:** The "code verifier" is a randomly generated string used to verify the authorization code, and the "code challenge" is derived from the code verifier. These methods enhance security during the authorization process.
-    In OAuth 2.0 PKCE, there are two methods for creating a "code challenge":
-
-    1. **S256**: The code challenge is a base64 URL-encoded SHA256 hash of a randomly generated string called the "code verifier".
-    
-    2. **plain**: The code challenge is the plain code verifier string itself.
-
-    Example authorization URL:
-
-    ```
-    https://twitter.com/i/oauth2/authorize?response_type=code&client_id=asdasASDas21Y0OGR4bnUxSzA4c0k6MTpjaQ&redirect_uri=http://example&scope=tweet.read%20tweet.write%20users.read%20follows.read&state=state&code_challenge=D601XXCSK57UineGq62gUnsoasdas1GfKUY8QWhOF9hiN_k&code_challenge_method=plain
-    ```
-
-    **Note:** By default, the access token you create through the OAuth 2.0 Flow, as used here, will only remain valid for two hours. There is an alternative way that does not invalidate the access token after 2 hours. To do this, refer to [Obtain access token under offline.access](https://developer.x.com/en/docs/authentication/oauth-2-0/user-access-token).
-
-2. Copy and paste the generated URL into your browser. This will redirect you to the Twitter authorization page.
-
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-twitter/main/docs/setup/resources/authorize.png alt="Authorize Page" style="width: 70%;">
-
-3. Once you authorize, you will be redirected to your specified redirect URI with an authorization code in the URL.
-
-    Example:
-
-    ```
-    http://www.example.com/?state=state&code=QjAtYldxeTZITnd5N0FVN1B3MlliU29rb1hrdmFPUWNXSG5LX1hCRExaeFE3OjE3MTkzODMzNjkxNjQ6MTowOmFjOjE
-    ```
-
-    **Note:** Store the authorization code and use it promptly as it expires quickly.
-
-4. Use the obtained authorization code to run the following curl command, replacing `<your_client_id>`, `<your_redirect_url>`, `<your_code_verifier>`, and `<your_authorization_code>` with your specific values:
-
-    - Linux/MacOS:
-    
-    ```bash
-    curl --location "https://api.twitter.com/2/oauth2/token" \
-    --header "Content-Type: application/x-www-form-urlencoded" \
-    --data-urlencode "code=<your_authorization_code>" \
-    --data-urlencode "grant_type=authorization_code" \
-    --data-urlencode "client_id=<your_client_id>" \
-    --data-urlencode "redirect_uri=<your_redirect_url>" \
-    --data-urlencode "code_verifier=<your_code_verifier>"
-    ```
-
-    - Windows:
-
-    ```bash
-    curl --location "https://api.twitter.com/2/oauth2/token" ^
-    --header "Content-Type: application/x-www-form-urlencoded" ^
-    --data-urlencode "code=<your_authorization_code>" ^
-    --data-urlencode "grant_type=authorization_code" ^
-    --data-urlencode "client_id=<your_client_id>" ^
-    --data-urlencode "redirect_uri=<your_redirect_url>" ^
-    --data-urlencode "code_verifier=<your_code_verifier>"
-    ```
-
-    This command will return the access token necessary for API calls.
-
-    ```json
-    {
-        "token_type":"bearer",
-        "expires_in":7200,
-        "access_token":"VWdEaEQ2eEdGdmVSbUJQV1U5LUdWREZuYndVT1JaNDddsdsfdsfdsxcvIZGMzblNjRGtvb3dGOjE3MTkzNzYwOTQ1MDQ6MTowOmF0Oj",
-        "scope":"tweet.write users.read follows.read tweet.read"
-    }
-    ```
-
-5. Store the access token securely for use in your application.
-
-**Note**: We recommend using the OAuth 2.0 Authorization Code with PKCE method as used here, but there is another way using OAuth 2.0 App Only [OAuth 2.0 App Only](https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only). Refer to this document to check which operations in Twitter API v2 are done using which method: [API reference](https://developer.twitter.com/en/docs/authentication/guides/v2-authentication-mapping).
-
-
+> **Tip:** You must copy and store these keys somewhere safe. They won't be visible again in your account settings for security reasons.
 ## Quickstart
 
-To use the `Twitter` connector in your Ballerina application, update the `.bal` file as follows:
+To use the `twitter` connector in your Ballerina application, update the `.bal` file as follows:
 
 ### Step 1: Import the module
 
-Import the `twitter` module.
-
 ```ballerina
+import ballerina/oauth2;
 import ballerinax/twitter;
 ```
 
 ### Step 2: Instantiate a new connector
 
-1. Create a `Config.toml` file and, configure the obtained credentials in the above steps as follows:
+1. Create a `Config.toml` file with your credentials:
 
-```bash
-token = "<Access Token>"
+```toml
+clientId = "<Your_Client_Id>"
+clientSecret = "<Your_Client_Secret>"
+refreshToken = "<Your_Refresh_Token>"
 ```
 
-2. Create a `twitter:ConnectionConfig` with the obtained access token and initialize the connector with it.
+2. Create a `twitter:ConnectionConfig` and initialize the client:
 
 ```ballerina
-configurable string token = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable string refreshToken = ?;
 
-final twitter:Client twitter = check new({
+final twitter:Client twitterClient = check new({
     auth: {
-        token
+        clientId,
+        clientSecret,
+        refreshToken
     }
 });
 ```
@@ -149,15 +65,15 @@ final twitter:Client twitter = check new({
 
 Now, utilize the available connector operations.
 
-#### Post a tweet
+#### Create a new tweet
 
 ```ballerina
 public function main() returns error? {
-    twitter:TweetCreateResponse postTweet = check twitter->/tweets.post( 
-        payload = {
-            text: "This is a sample tweet"
-        }
-    );
+    twitter:TweetCreateRequest newTweet = {
+        text: "Hello from Ballerina! 🎉"
+    };
+
+    twitter:TweetCreateResponse response = check twitterClient->/tweets.post(newTweet);
 }
 ```
 
@@ -166,12 +82,11 @@ public function main() returns error? {
 ```bash
 bal run
 ```
-
-
 ## Examples
 
-The `Twitter` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/), covering the following use cases:
+The `twitter` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples), covering the following use cases:
 
-1. [Direct message company mentions](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/DM-mentions) - Integrate Twitter to send direct messages to users who mention the company in tweets.
-
-2. [Tweet performance tracker](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/tweet-performance-tracker) - Analyze the performance of tweets posted by a user over the past month.
+1. [Social media trend analysis](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/social-media-trend-analysis) - Demonstrates how to analyze trending topics and hashtags using the Twitter API.
+2. [Automated dm support workflow](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/automated-dm-support-workflow) - Illustrates creating automated direct message responses for customer support scenarios.
+3. [Tweet performance analytics](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/tweet-performance-analytics) - Shows how to track and analyze tweet engagement metrics and performance data.
+4. [Competitor twitter monitoring](https://github.com/ballerina-platform/module-ballerinax-twitter/tree/main/examples/competitor-twitter-monitoring) - Demonstrates monitoring competitor Twitter activity and extracting insights.
